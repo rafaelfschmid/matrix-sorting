@@ -1,3 +1,24 @@
+/**
+ * Copyright 1993-2012 NVIDIA Corporation.  All rights reserved.
+ *
+ * Please refer to the NVIDIA end user license agreement (EULA) associated
+ * with this source code for terms and conditions that govern your use of
+ * this software. Any use, reproduction, disclosure, or distribution of
+ * this software and related documentation outside the terms of the EULA
+ * is strictly prohibited.
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+
+#include <cuda.h>
+
+// Thread block size
+#ifndef BLOCK_SIZE
+#define BLOCK_SIZE 16
+#endif
+
+
 void cudaTest(cudaError_t error) {
 	if (error != cudaSuccess) {
 		printf("cuda returned error %s (code %d), line(%d)\n",
@@ -14,45 +35,50 @@ void print(uint* host_data, uint n) {
 	std::cout << "\n";
 }
 
+// Matrix multiplication kernel called by MatMul()
+__global__ void block_sorting(uint* A, int n, int m) {
+// Each thread computes one element of C
+// by accumulating results into Cvalue
+	int row = blockIdx.y * blockDim.y + threadIdx.y;
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+
+	for (int e = 0; e < A.width; ++e)
+		Cvalue += A.elements[row * A.width + e] * B.elements[e * B.width + col];
+
+	C.elements[row * C.width + col] = Cvalue;
+
+}
+
+
 int main(int argc, char** argv) {
 
-	uint num_of_segments;
 	uint num_of_elements;
 	uint i;
 
-	scanf("%d", &num_of_segments);
-	uint mem_size_seg = sizeof(int) * (num_of_segments + 1);
-	uint *h_seg = (uint *) malloc(mem_size_seg);
-	for (i = 0; i < num_of_segments + 1; i++)
-		scanf("%d", &h_seg[i]);
-
 	scanf("%d", &num_of_elements);
-	uint mem_size_vec = sizeof(int) * num_of_elements;
-	uint *h_vec = (uint *) malloc(mem_size_vec);
-	uint *h_value = (uint *) malloc(mem_size_vec);
+	uint mem_size = sizeof(int) * (num_of_elements * num_of_elements);
+	uint *h_vec = (uint *) malloc(mem_size);
 	for (i = 0; i < num_of_elements; i++) {
-		scanf("%d", &h_vec[i]);
-		h_value[i] = i;
+		for (i = 0; i < num_of_elements + 1; i++) {
+			scanf("%d", &h_vec[i]);
+		}
 	}
 
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 
-	uint *d_value, *d_value_out, *d_vec, *d_vec_out;
+	uint *d_vec;
 
 	cudaTest(cudaMalloc((void **) &d_vec, mem_size_vec));
-	cudaTest(cudaMalloc((void **) &d_value, mem_size_vec));
-	cudaTest(cudaMalloc((void **) &d_vec_out, mem_size_vec));
-	cudaTest(cudaMalloc((void **) &d_value_out, mem_size_vec));
 
 	for (int i = 0; i < EXECUTIONS; i++) {
 
 		cudaTest(cudaMemcpy(d_vec, h_vec, mem_size_vec, cudaMemcpyHostToDevice));
-		cudaTest(cudaMemcpy(d_value, h_value, mem_size_vec, cudaMemcpyHostToDevice));
 
 		cudaEventRecord(start);
-		uint threadCount = block_sorting(d_vec_out, d_value_out, d_vec, d_value, 1, num_of_elements, 1);
+		block_sorting(d_vec, num_of_elements, num_of_elements);
 		cudaEventRecord(stop);
 
 		cudaError_t errSync = cudaGetLastError();
@@ -74,25 +100,13 @@ int main(int argc, char** argv) {
 
 	cudaMemcpy(h_vec, d_vec_out, mem_size_vec, cudaMemcpyDeviceToHost);
 
-	for (i = 0; i < num_of_segments; i++) {
-		for (uint j = h_seg[i]; j < h_seg[i + 1]; j++) {
-			uint segIndex = i << mostSignificantBit;
-			h_vec[j] -= segIndex;
-		}
-	}
-
 	cudaFree(d_vec);
-	cudaFree(d_vec_out);
-	cudaFree(d_value);
-	cudaFree(d_value_out);
 
 	if (ELAPSED_TIME != 1) {
 		print(h_vec, num_of_elements);
 	}
 
-	free(h_seg);
 	free(h_vec);
-	free(h_value);
 
 	return 0;
 }
