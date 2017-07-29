@@ -13,12 +13,13 @@
 
 void kernel(uint* a, int n, int p, int q) {
 	int d = 1 << (p-q);
-	printf("d=%d\n",d);
+	//printf("d=%d\n",d);
 
 	for(int i = 0; i < n; i++) {
 		bool up = ((i >> p) & 2) == 0;
 
 		if ((i & d) == 0 && (a[i] > a[i | d]) == up) {
+			//printf("i=%d | d=%d | i&d=%d | i|d=%d | a[i]=%d | a[i|d]=%d\n", i, d, i&d, i|d, a[i], a[i|d]);
 			int t = a[i];
 			a[i] = a[i | d];
 			a[i | d] = t;
@@ -27,9 +28,6 @@ void kernel(uint* a, int n, int p, int q) {
 }
 
 void bitonicSort(int logn, uint* a, int n) {
-	if (n == 1 << logn) {
-		printf("assert");
-	}
 
 	for (int p = 0; p < logn; p++) {
 		for (int q = 0; q <= p; q++) {
@@ -51,20 +49,25 @@ int main(int argc, char **argv) {
 	uint i;
 
 	scanf("%d", &num_of_elements);
-	uint mem_size = sizeof(int) * (num_of_elements * num_of_elements);
+	int n = num_of_elements * num_of_elements;
+	uint mem_size = sizeof(int) * (n);
 	uint *h_vec = (uint *) malloc(mem_size);
 	for (int i = 0; i < num_of_elements; i++) {
 		for (int j = 0; j < num_of_elements; j++) {
 			scanf("%d", &h_vec[i*num_of_elements + j]);
 		}
 	}
-	int logn = 4;
-	int n = 1 << logn;
-	printf("n=%d\n", n);
 
-	bitonicSort(logn, h_vec, num_of_elements * num_of_elements);
+	int logn = 0;
+	for(int i = 1; i < n; i*=2){
+		logn++;
+	}
 
-	print(h_vec, num_of_elements * num_of_elements);
+	printf("logn=%d\n", logn);
+
+	bitonicSort(logn, h_vec, n);
+
+	print(h_vec, n);
 
 	return 0;
 }

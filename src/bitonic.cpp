@@ -11,11 +11,6 @@
 #include <stdlib.h>
 #include <iostream>
 
-void kernel(uint* a, int n, int p, int q) {
-
-}
-
-
 void print(uint* host_data, uint n) {
 	std::cout << "\n";
 	for (uint i = 0; i < n; i++) {
@@ -24,55 +19,56 @@ void print(uint* host_data, uint n) {
 	std::cout << "\n";
 }
 
-void swap(bool up, uint* a, int p, int q){
-	if((a[p] > a[q]) == up)
-	{
+void swap(bool up, uint* a, int p, int q) {
+	if ((a[p] > a[q]) == up) {
 		uint aux = a[p];
 		a[p] = a[q];
 		a[q] = aux;
 	}
 }
 
-void merge(uint* a, int n, int c){
-	int p = 1;
-	for(int j = c; j >= 4; j/=2){
-		int m = j/2;
+/*void merge(uint* a, int n, int c){
+ int p = 1;
+ for(int j = c; j >= 2; j/=2){
+ int m = j/2;
 
-		for(int i = 0; i < n/j; i++){
-			for(int k = i*j; k < (i*j+m); k++) {
-				//swap((i%2)==0, a, k, m+k);
-				swap((i%(2*p)) < p, a, k, m+k);
+ for(int i = 0; i < n/j; i++){
+ for(int k = i*j; k < (i*j+m); k++) {
+ swap((i&p)==0, a, k, m+k);
+ }
+ }
+
+ p*=2;
+ }
+ }*/
+
+void bitonicSort(int logn, uint* a, int n) {
+
+	/*for(int k = 1; k <= n; k*=2) {
+	 merge(a, n, k);
+	 }*/
+
+	for (int c = 0; c <= logn; c++) {
+
+		int x = 1 << c;
+
+		int p = 1;
+
+		for (int j = x; j >= 2; j /= 2) {
+
+			int m = j >> 1;
+
+			for (int i = 0; i < n / j; i++) {
+
+				for (int k = i * j; k < (i * j + m); k++) {
+
+					swap((i & p) == 0, a, k, m + k);
+				}
 			}
+
+			p = p << 1;
 		}
-
-		p*=2;
-		print(a, n);
 	}
-}
-
-void bitonicPass(uint* a, int n, int p){
-
-	for(int k = 0; k < n/2; k++) {
-		int i = k*2;
-		swap((k%(2*p)) < p, a, i, i+1);
-	}
-
-	print(a, n);
-}
-
-void bitonicSort(uint* a, int n) {
-
-	for(int k = 1; k < n/2; k*=2) {
-		printf("\nbitonic");
-		bitonicPass(a, n, k);
-
-		printf("\nmerge");
-		merge(a, n, k*4);
-	}
-
-	printf("\nbitonic");
-	bitonicPass(a, n, n/2);
-
 }
 
 int main(int argc, char **argv) {
@@ -85,15 +81,22 @@ int main(int argc, char **argv) {
 	uint *h_vec = (uint *) malloc(mem_size);
 	for (int i = 0; i < num_of_elements; i++) {
 		for (int j = 0; j < num_of_elements; j++) {
-			scanf("%d", &h_vec[i*num_of_elements + j]);
+			scanf("%d", &h_vec[i * num_of_elements + j]);
 		}
 	}
 
+	int logn = 0;
+	for(int i = 1; i < n; i*=2){
+		logn++;
+	}
+
+	printf("logn=%d\n", logn);
+
 	print(h_vec, n);
 
-	bitonicSort(h_vec, n);
+	bitonicSort(logn, h_vec, n);
 
-	//print(h_vec, num_of_elements * num_of_elements);
+	print(h_vec, n);
 
 	return 0;
 }
