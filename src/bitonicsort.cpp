@@ -13,13 +13,11 @@
 
 void kernel(uint* a, int n, int p, int q) {
 	int d = 1 << (p-q);
-	//printf("d=%d\n",d);
 
 	for(int i = 0; i < n; i++) {
 		bool up = ((i >> p) & 2) == 0;
 
 		if ((i & d) == 0 && (a[i] > a[i | d]) == up) {
-			//printf("i=%d | d=%d | i&d=%d | i|d=%d | a[i]=%d | a[i|d]=%d\n", i, d, i&d, i|d, a[i], a[i|d]);
 			int t = a[i];
 			a[i] = a[i | d];
 			a[i | d] = t;

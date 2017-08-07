@@ -1,0 +1,94 @@
+32
+0.032352
+0.032928
+0.034176
+0.037792
+0.032704
+0.030944
+0.034752
+0.036096
+0.036928
+0.030592
+ 
+64
+0.060064
+0.059456
+0.056608
+0.057376
+0.0544
+0.05456
+0.05264
+0.05328
+0.052416
+0.0544
+ 
+128
+0.153088
+0.148864
+0.149312
+0.150304
+0.156384
+0.15152
+0.148864
+0.148416
+0.149824
+0.14896
+ 
+256
+0.593376
+0.59232
+0.592576
+0.593504
+0.593792
+0.591936
+0.59408
+0.5912
+0.592384
+0.592544
+ 
+512
+2.31754
+2.3279
+2.32656
+2.3233
+2.32192
+2.32618
+2.32675
+2.32848
+2.3224
+2.32144
+ 
+1024
+9.25322
+9.25482
+9.25613
+9.24477
+9.25414
+9.24547
+9.26272
+9.2488
+9.25418
+9.24611
+ 
+2048
+Sync kernel error: invalid configuration argument
+0.001504
+Sync kernel error: invalid configuration argument
+0.001472
+Sync kernel error: invalid configuration argument
+0.001504
+Sync kernel error: invalid configuration argument
+0.001504
+Sync kernel error: invalid configuration argument
+0.001632
+Sync kernel error: invalid configuration argument
+0.001472
+Sync kernel error: invalid configuration argument
+0.001504
+Sync kernel error: invalid configuration argument
+0.001504
+Sync kernel error: invalid configuration argument
+0.001504
+Sync kernel error: invalid configuration argument
+0.001504
+ 

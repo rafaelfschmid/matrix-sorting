@@ -13,10 +13,16 @@ bitonicsort: bitonicsort.cpp
 bitonic: bitonic.cpp
 	g++ -O3 bitonic.cpp -o bitonic.exe -std=c++11
 
-blocksorting: blocksorting.cu
-	for block in 2 4 8 16 32 ; do \
-		nvcc $(gen) shared.cu -o shared$$block.exe $(libs) $(params) -DELAPSED_TIME=$(TIME) -DEXECUTIONS=$(EXECS) -DBLOCK_SIZE=$$block ; \
+blocksortinguni: blocksortinguni.cu
+	for block in 2 4 8 16 32 64 128 256 512 1024 ; do \
+		nvcc $(gen) blocksortinguni.cu -o blocksortinguni$$block.exe $(libs) $(params) -DELAPSED_TIME=$(TIME) -DEXECUTIONS=$(EXECS) -DBLOCK_SIZE=$$block ; \
 	done
+
+blocksortingbi: blocksortingbi.cu
+	for block in 2 4 8 16 32 ; do \
+		nvcc $(gen) blocksortingbi.cu -o blocksortingbi$$block.exe $(libs) $(params) -DELAPSED_TIME=$(TIME) -DEXECUTIONS=$(EXECS) -DBLOCK_SIZE=$$block ; \
+	done
+
 
 generate: gen_equal.cpp
 	g++ -O3 gen_equal.cpp -o equal.exe -DEXP_BITS_SIZE=$(BITS) -DRAND
