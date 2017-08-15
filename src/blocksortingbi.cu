@@ -13,9 +13,12 @@
 
 #include <cuda.h>
 
-// Thread block size
 #ifndef BLOCK_SIZE
 #define BLOCK_SIZE 16
+#endif
+
+#ifndef SEGMENT_SIZE
+#define SEGMENT_SIZE 2
 #endif
 
 void cudaTest(cudaError_t error) {
@@ -43,7 +46,7 @@ __global__ void block_sorting(uint *d_vec, int n) {
 	uint i = blockDim.x * blockIdx.x + threadIdx.x;
 	uint j = blockDim.y * blockIdx.y + threadIdx.y;
 
-	for (int k = 2; k <= BLOCK_SIZE; k <<= 1) { // sorting only block size row
+	for (int k = 2; k <= SEGMENT_SIZE; k <<= 1) { // sorting only segment size row
 
 		for (int p = k >> 1; p > 0; p = p >> 1) {
 

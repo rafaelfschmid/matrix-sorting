@@ -8,9 +8,9 @@ for filename in `ls -tr $dir1`; do
 	c=$(echo $file| cut -d'.' -f 1)
 
 	echo $c
-	for b in `seq 1 10`; do
+#	for b in `seq 1 10`; do
 		./$prog < $dir1/$filename 
-	done
+#	done
 	echo " "
 done
 

@@ -4,7 +4,7 @@ export LD_LIBRARY_PATH=${CUDA_HOME}/lib64
 PATH=${CUDA_HOME}/bin:${PATH}
 
 export TIME=1
-export EXECS=1
+export EXECS=10
 export BITS=8
 #export BLOCK=2
 #export BLOCK=4

@@ -1,12 +1,8 @@
 
 times=$1
+parsed=$2
 
-for i in 2 4 8 16 32 64 128 256 512 1024; do
-	./parser.exe $times/blocksortinguni$i.out $times/00blocksortinguni$i.out
+for filename in `ls -tr $times`; do
+	./parser.exe $times/$filename $parsed/$filename
 done
-
-for i in 2 4 8 16 32 ; do
-	./parser.exe $times/blocksortingbi$i.out $times/00blocksortingbi$i.out
-done
-
 
