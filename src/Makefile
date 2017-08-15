@@ -21,10 +21,26 @@ blocksortinguni: blocksortinguni.cu
 		done ; \
 	done
 
+blocksortingshareduni: blocksortingshareduni.cu
+	for block in 2 4 8 16 32 64 128 256 512 1024 ; do \
+		segment=2 ; while [ $${segment} -le $${block} ]; do \
+			nvcc $(gen) blocksortingshareduni.cu -o blocksortingshareduni$${block}_$${segment}.exe $(libs) $(params) -DELAPSED_TIME=$(TIME) -DEXECUTIONS=$(EXECS) -DBLOCK_SIZE=$$block -DSEGMENT_SIZE=$$segment ; \
+		segment=$$((segment * 2)) ; \
+		done ; \
+	done
+
 blocksortingbi: blocksortingbi.cu
 	for block in 2 4 8 16 32 ; do \
 		segment=2 ; while [ $${segment} -le $${block} ]; do \
 			nvcc $(gen) blocksortingbi.cu -o blocksortingbi$${block}_$${segment}.exe $(libs) $(params) -DELAPSED_TIME=$(TIME) -DEXECUTIONS=$(EXECS) -DBLOCK_SIZE=$$block -DSEGMENT_SIZE=$$segment ; \
+		segment=$$((segment * 2)) ; \
+		done ; \
+	done ; \
+
+blocksortingsharedbi: blocksortingsharedbi.cu
+	for block in 2 4 8 16 32 ; do \
+		segment=2 ; while [ $${segment} -le $${block} ]; do \
+			nvcc $(gen) blocksortingsharedbi.cu -o blocksortingsharedbi$${block}_$${segment}.exe $(libs) $(params) -DELAPSED_TIME=$(TIME) -DEXECUTIONS=$(EXECS) -DBLOCK_SIZE=$$block -DSEGMENT_SIZE=$$segment ; \
 		segment=$$((segment * 2)) ; \
 		done ; \
 	done ; \
